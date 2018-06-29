@@ -15,19 +15,13 @@ def deploy(c):
     with Connection(host='138.68.234.194',user='aemil', port='22', connect_kwargs={'password':'@e157Mil'}) as c:
         c.run(f'mkdir -p {site_folder}')
         with c.cd(site_folder):
-            print('1')
             _get_latest_source(c)
-            print('2')
             _update_virtualenv(c)
-            print('3')
             _create_or_update_dotenv(c)
+        with c.cd(f'{site_folder}/{site_name}'):
+            #_update_static_files(c)
+            _update_database(c)
 
-            with c.cd(f'{site_folder}/{site_name}'):
-                print('4')
-                _update_static_files(c)
-                print('5')
-                _update_database(c)
-                print('6')
 
 
 def _get_latest_source(c):
@@ -37,7 +31,7 @@ def _get_latest_source(c):
         c.run(f'git clone {REPO_URL} .')
     with c.cd('/Users/Nitrate/Documents/django-TOMIS-nptadwords'):
         current_commit = c.local("git log -n 1 --format=%H", env={'PATH': 'C:\\Program Files\\Git\\cmd'})
-    c.run(f'git reset {current_commit.stdout}')
+    c.run(f'git reset --hard {current_commit.stdout} ')
 
 
 def _update_virtualenv(c):
