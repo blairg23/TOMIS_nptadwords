@@ -85,8 +85,9 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'nptadwords_store_drf',
+        'NAME': 'nptadwords_drf',
         'USER': 'nptadwords',
+        'PASSWORD': 'nptadwords',
         'HOST': '127.0.0.1',
         'PORT': '5432'
     }
