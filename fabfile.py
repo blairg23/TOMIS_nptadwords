@@ -1,6 +1,6 @@
 import random
 import os
-from fabric import Connection
+from fabric import Connection, Config
 from patchwork.files import exists, append
 from invoke import task
 
@@ -10,9 +10,14 @@ site_folder = '/home/aemil/django-TOMIS-nptadwords'
 site_name = 'TOMIS_nptadwords'
 
 
+config = Config()
+config['sudo']['password'] = '@e157Mil'
+config['sudo']['user'] = 'aemil'
+config['user'] = 'aemil'
+
 @task
 def deploy(c):
-    with Connection(host='138.68.234.194',user='aemil', port='22', connect_kwargs={'password':'@e157Mil'}) as c:
+    with Connection(host='138.68.234.194', config=config, connect_kwargs={'password':'@e157Mil'}) as c:
         c.run('mkdir -p {}'.format(site_folder))
         with c.cd(site_folder):
             _get_latest_source(c)
@@ -21,7 +26,7 @@ def deploy(c):
         with c.cd('{}/{}'.format(site_folder, site_name)):
             _update_static_files(c)
             _update_database(c)
-        c.sudo('systemctl restart gunicorn')
+        c.sudo('sudo systemctl restart gunicorn')
 
 
 
@@ -38,7 +43,7 @@ def _get_latest_source(c):
 def _update_virtualenv(c):
     if not c.run('pipenv --venv',warn=True):
         c.run('pipenv --three')
-    c.run('pipenv install --dev')
+    #c.run('pipenv install --dev')
 
 
 def _create_or_update_dotenv(c):
