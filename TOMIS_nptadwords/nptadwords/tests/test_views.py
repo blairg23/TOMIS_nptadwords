@@ -2,19 +2,19 @@ import json
 from rest_framework import status
 from django.test import TestCase, Client
 from django.urls import reverse
-from ..models import Account
-from ..serializers import AccountSerializers
+from ..models import Record
+from ..serializers import RecordSerializers
 
 
 # initialize the APIClient app
 client = Client()
 
 
-class GetAllAccountsTest(TestCase):
-    """ Test module for GET all accounts API """
+class GetAllRecordsTest(TestCase):
+    """ Test module for GET all record API """
 
     def setUp(self):
-        Account.objects.create(
+        Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 1',
             CampaignId=111111111, CampaignName='Test CampaignName 1',
             CampaignStatus=True, CityCriteriaId=1111111,
@@ -26,7 +26,7 @@ class GetAllAccountsTest(TestCase):
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
             Cost=150000, Impressions=4, Interactions=1,
             InteractionTypes='[\"Clicks\"]', VideoViews=0)
-        Account.objects.create(
+        Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 2',
             CampaignId=222222222, CampaignName='Test CampaignName 2',
             CampaignStatus=False, CityCriteriaId=2222222,
@@ -39,21 +39,21 @@ class GetAllAccountsTest(TestCase):
             Cost=170000, Impressions=8, Interactions=4,
             InteractionTypes='[\"Clicks\"]', VideoViews=1)
 
-    def test_get_all_accounts(self):
+    def test_get_all_records(self):
         # get API response
-        response = client.get(reverse('get_post_accounts'))
+        response = client.get(reverse('get_post_records'))
         # get data from db
-        accounts = Account.objects.all()
-        serializer = AccountSerializers(accounts, many=True)
+        records = Record.objects.all()
+        serializer = RecordSerializers(records, many=True)
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class GetSingleAccountTest(TestCase):
-    """  Test Module for GET single account API """
+class GetSingleRecordTest(TestCase):
+    """  Test Module for GET single record API """
 
     def setUp(self):
-        self.test_account_1 = Account.objects.create(
+        self.test_record_1 = Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 1',
             CampaignId=111111111, CampaignName='Test CampaignName 1',
             CampaignStatus=True, CityCriteriaId=1111111,
@@ -65,7 +65,7 @@ class GetSingleAccountTest(TestCase):
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
             Cost=150000, Impressions=4, Interactions=1,
             InteractionTypes='[\"Clicks\"]', VideoViews=0)
-        self.test_account_2 = Account.objects.create(
+        self.test_record_2 = Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 2',
             CampaignId=222222222, CampaignName='Test CampaignName 2',
             CampaignStatus=False, CityCriteriaId=2222222,
@@ -78,22 +78,22 @@ class GetSingleAccountTest(TestCase):
             Cost=170000, Impressions=8, Interactions=4,
             InteractionTypes='[\"Clicks\"]', VideoViews=1)
 
-    def test_get_valid_single_account(self):
+    def test_get_valid_single_record(self):
         response = client.get(
-            reverse('get_delete_update_account', kwargs={'pk': self.test_account_1.pk}))
-        account = Account.objects.get(pk=self.test_account_1.pk)
-        serializer = AccountSerializers(account)
+            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}))
+        record = Record.objects.get(pk=self.test_record_1.pk)
+        serializer = RecordSerializers(record)
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_get_invalid_single_account(self):
+    def test_get_invalid_single_record(self):
         response = client.get(
-            reverse('get_delete_update_account', kwargs={'pk': 30}))
+            reverse('get_delete_update_record', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
-class CreateNewAccountTest(TestCase):
-    """ Test module for inserting a new account """
+class CreateNewRecordTest(TestCase):
+    """ Test module for inserting a new record """
 
     def setUp(self):
         self.valid_payload = {
@@ -149,27 +149,27 @@ class CreateNewAccountTest(TestCase):
             "VideoViews": "0"
         }
 
-    def test_create_valid_account(self):
+    def test_create_valid_record(self):
         response = client.post(
-            reverse('get_post_accounts'),
+            reverse('get_post_records'),
             data=json.dumps(self.valid_payload),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
-    def test_create_invalid_account(self):
+    def test_create_invalid_record(self):
         response = client.post(
-            reverse('get_post_accounts'),
+            reverse('get_post_records'),
             data=json.dumps(self.invalid_payload),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
-class UpdateSingleAccountTest(TestCase):
-    """ Test module for updating an existing account record """
+class UpdateSingleRecordTest(TestCase):
+    """ Test module for updating an existing record """
 
     def setUp(self):
-        self.test_account_1 = Account.objects.create(
+        self.test_record_1 = Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 1',
             CampaignId=111111111, CampaignName='Test CampaignName 1',
             CampaignStatus=True, CityCriteriaId=1111111,
@@ -181,7 +181,7 @@ class UpdateSingleAccountTest(TestCase):
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
             Cost=150000, Impressions=4, Interactions=1,
             InteractionTypes='[\"Clicks\"]', VideoViews=0)
-        self.test_account_2 = Account.objects.create(
+        self.test_record_2 = Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 2',
             CampaignId=222222222, CampaignName='Test CampaignName 2',
             CampaignStatus=False, CityCriteriaId=2222222,
@@ -246,17 +246,17 @@ class UpdateSingleAccountTest(TestCase):
             "VideoViews": "0"
         }
 
-    def test_valid_update_account(self):
+    def test_valid_update_record(self):
         response = client.put(
-            reverse('get_delete_update_account', kwargs={'pk': self.test_account_1.pk}),
+            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}),
             data=json.dumps(self.valid_payload),
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_invalid_update_account(self):
+    def test_invalid_update_record(self):
         response = client.put(
-            reverse('get_delete_update_account', kwargs={'pk': self.test_account_1.pk}),
+            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}),
             data=json.dumps(self.invalid_payload),
             content_type='application/json'
         )

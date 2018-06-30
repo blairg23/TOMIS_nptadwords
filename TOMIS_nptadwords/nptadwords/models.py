@@ -1,10 +1,10 @@
 from django.db import models
 
 
-class Account(models.Model):
+class Record(models.Model):
     """
-    Account Model
-    Defines the attributes of an account
+    Record Model
+    Defines the attributes of an record
     """
     AccountDescriptiveName = models.CharField(max_length=255)
     CampaignId = models.IntegerField()

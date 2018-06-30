@@ -1,27 +1,27 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Account
-from .serializers import AccountSerializers
+from .models import Record
+from .serializers import RecordSerializers
 from datetime import datetime
 from decimal import *
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
-def get_delete_update_account(request, pk):
+def get_delete_update_record(request, pk):
     try:
-        account = Account.objects.get(pk=pk)
-    except Account.DoesNotExist:
+        record = Record.objects.get(pk=pk)
+    except Record.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    # get details of single account
+    # get details of single record
     if request.method == 'GET':
-        serializer = AccountSerializers(account)
+        serializer = RecordSerializers(record)
         return Response(serializer.data)
-    # delete single account
+    # delete single record
     elif request.method == 'DELETE':
         return Response({})
-    # update detail of single account
+    # update detail of single record
     elif request.method == 'PUT':
         data = {
             'AccountDescriptiveName': request.data.get('AccountDescriptiveName'),
@@ -49,7 +49,7 @@ def get_delete_update_account(request, pk):
             'InteractionTypes': request.data.get('InteractionTypes'),
             'VideoViews': int(request.data.get('VideoViews')),
         }
-        serializer = AccountSerializers(data=data)
+        serializer = RecordSerializers(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -57,13 +57,13 @@ def get_delete_update_account(request, pk):
 
 
 @api_view(['GET', 'POST'])
-def get_post_accounts(request):
-    # get all accounts
+def get_post_records(request):
+    # get all records
     if request.method == 'GET':
-        accounts = Account.objects.all()
-        serializer = AccountSerializers(accounts, many=True)
+        records = Record.objects.all()
+        serializer = RecordSerializers(records, many=True)
         return Response(serializer.data)
-    # insert a new record for an account
+    # insert a new record for an record
     elif request.method == 'POST':
         data = {
             'AccountDescriptiveName': request.data.get('AccountDescriptiveName'),
@@ -91,7 +91,7 @@ def get_post_accounts(request):
             'InteractionTypes': request.data.get('InteractionTypes'),
             'VideoViews': int(request.data.get('VideoViews')),
         }
-        serializer = AccountSerializers(data=data)
+        serializer = RecordSerializers(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

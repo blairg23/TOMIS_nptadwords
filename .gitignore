@@ -3,6 +3,8 @@
 .tmp*
 .DS_Store
 .project
+*.sublime-project
+*.sublime-workspace
 .pydevproject
 .settings
 .svn
@@ -12,3 +14,16 @@ dev.db
 build
 *.tar.gz
 *.bak
+*.mo
+*~
+*.yaml
+.coverage
+db.sqlite3
+uwsgi.ini
+log/**
+!log/placeholder
+media/**
+!media/**/init.txt
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py

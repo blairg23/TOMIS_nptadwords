@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Account
+from .models import Record
 
 
-class AccountSerializers(serializers.ModelSerializer):
+class RecordSerializers(serializers.ModelSerializer):
     class Meta:
-        model = Account
+        model = Record
         fields = ('AccountDescriptiveName', 'CampaignId', 'CampaignName',
                   'CampaignStatus', 'CityCriteriaId', 'CountryCriteriaId',
                   'CustomerDescriptiveName', 'ExternalCustomerId',

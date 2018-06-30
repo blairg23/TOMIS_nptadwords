@@ -1,12 +1,12 @@
 from django.test import TestCase
-from ..models import Account
+from ..models import Record
 
 
-class AccountTest(TestCase):
-    ''' Test module for Account Model '''
+class RecordTest(TestCase):
+    ''' Test module for Record Model '''
 
     def setUp(self):
-        Account.objects.create(
+        Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 1',
             CampaignId=111111111, CampaignName='Test CampaignName 1',
             CampaignStatus=True, CityCriteriaId=1111111,
@@ -18,7 +18,7 @@ class AccountTest(TestCase):
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
             Cost=150000, Impressions=4, Interactions=1,
             InteractionTypes='[\"Clicks\"]', VideoViews=0)
-        Account.objects.create(
+        Record.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 2',
             CampaignId=222222222, CampaignName='Test CampaignName 2',
             CampaignStatus=False, CityCriteriaId=2222222,
@@ -32,11 +32,11 @@ class AccountTest(TestCase):
             InteractionTypes='[\"Clicks\"]', VideoViews=1)
 
     def test_campaign_name(self):
-        account_test1 = Account.objects.get(
+        record_test_1 = Record.objects.get(
             AccountDescriptiveName='Test AccountDescriptiveName 1')
-        account_test2 = Account.objects.get(
+        record_test_2 = Record.objects.get(
             AccountDescriptiveName='Test AccountDescriptiveName 2')
         self.assertEqual(
-            account_test1.get_CampaignName(), "Test AccountDescriptiveName 1 Campaign Name is Test CampaignName 1.")
+            record_test_1.get_CampaignName(), "Test AccountDescriptiveName 1 Campaign Name is Test CampaignName 1.")
         self.assertEqual(
-            account_test2.get_CampaignName(), "Test AccountDescriptiveName 2 Campaign Name is Test CampaignName 2.")
+            record_test_2.get_CampaignName(), "Test AccountDescriptiveName 2 Campaign Name is Test CampaignName 2.")
