@@ -87,6 +87,6 @@ class GetSingleAccountTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_account(self):
-        response = client(
+        response = client.get(
             reverse('get_delete_update_account', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
