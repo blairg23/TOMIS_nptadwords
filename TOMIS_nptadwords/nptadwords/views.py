@@ -18,9 +18,12 @@ def get_delete_update_record(request, pk):
     if request.method == 'GET':
         serializer = RecordSerializers(record)
         return Response(serializer.data)
+
     # delete single record
     elif request.method == 'DELETE':
-        return Response({})
+        record.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
     # update detail of single record
     elif request.method == 'PUT':
         data = {
@@ -28,14 +31,14 @@ def get_delete_update_record(request, pk):
             'CampaignId': int(request.data.get('CampaignId')),
             'CampaignName': request.data.get('CampaignName'),
             'CampaignStatus': bool(request.data.get('CampaignStatus') == 'enabled'),
-            'CityCriteriaId': int(request.data.get('CityCriteriaId')),
-            'CountryCriteriaId': int(request.data.get('CountryCriteriaId')),
+            'CityCriteriaId': criteria_id_cleaner(request.data.get('CityCriteriaId')),
+            'CountryCriteriaId': criteria_id_cleaner(request.data.get('CountryCriteriaId')),
             'CustomerDescriptiveName': request.data.get('CustomerDescriptiveName'),
             'ExternalCustomerId': int(request.data.get('ExternalCustomerId')),
             'IsTargetingLocation': bool(request.data.get('IsTargetingLocation').lower() in ("yes", "true", "t", "1")),
-            'MetroCriteriaId': request.data.get('MetroCriteriaId'),
-            'MostSpecificCriteriaId': int(request.data.get('MostSpecificCriteriaId')),
-            'RegionCriteriaId': int(request.data.get('RegionCriteriaId')),
+            'MetroCriteriaId': criteria_id_cleaner(request.data.get('MetroCriteriaId')),
+            'MostSpecificCriteriaId': criteria_id_cleaner(request.data.get('MostSpecificCriteriaId')),
+            'RegionCriteriaId': criteria_id_cleaner(request.data.get('RegionCriteriaId')),
             'Date': datetime.strptime(request.data.get('Date'),"%Y-%m-%d").date(),
             'Device': request.data.get('Device'),
             'LocationType': request.data.get('LocationType'),
@@ -70,14 +73,14 @@ def get_post_records(request):
             'CampaignId': int(request.data.get('CampaignId')),
             'CampaignName': request.data.get('CampaignName'),
             'CampaignStatus': bool(request.data.get('CampaignStatus') == 'enabled'),
-            'CityCriteriaId': int(request.data.get('CityCriteriaId')),
-            'CountryCriteriaId': int(request.data.get('CountryCriteriaId')),
+            'CityCriteriaId': criteria_id_cleaner(request.data.get('CityCriteriaId')),
+            'CountryCriteriaId': criteria_id_cleaner(request.data.get('CountryCriteriaId')),
             'CustomerDescriptiveName': request.data.get('CustomerDescriptiveName'),
             'ExternalCustomerId': int(request.data.get('ExternalCustomerId')),
             'IsTargetingLocation': bool(request.data.get('IsTargetingLocation').lower() in ("yes", "true", "t", "1")),
-            'MetroCriteriaId': request.data.get('MetroCriteriaId'),
-            'MostSpecificCriteriaId': int(request.data.get('MostSpecificCriteriaId')),
-            'RegionCriteriaId': int(request.data.get('RegionCriteriaId')),
+            'MetroCriteriaId': criteria_id_cleaner(request.data.get('MetroCriteriaId')),
+            'MostSpecificCriteriaId': criteria_id_cleaner(request.data.get('MostSpecificCriteriaId')),
+            'RegionCriteriaId': criteria_id_cleaner(request.data.get('RegionCriteriaId')),
             'Date': datetime.strptime(request.data.get('Date'),"%Y-%m-%d").date(),
             'Device': request.data.get('Device'),
             'LocationType': request.data.get('LocationType'),
@@ -97,3 +100,9 @@ def get_post_records(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+def criteria_id_cleaner(id):
+    try:
+        return int(id)
+    except(ValueError):
+        return None

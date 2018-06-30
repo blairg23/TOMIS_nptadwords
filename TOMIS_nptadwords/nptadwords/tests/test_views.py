@@ -20,7 +20,7 @@ class GetAllRecordsTest(TestCase):
             CampaignStatus=True, CityCriteriaId=1111111,
             CountryCriteriaId=1111, CustomerDescriptiveName='Test CustomerDescriptiveName 1',
             ExternalCustomerId=1111111111, IsTargetingLocation=True,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=1111111,
+            MetroCriteriaId=None, MostSpecificCriteriaId=1111111,
             RegionCriteriaId=11111, Date='2018-06-27', Device='Computers',
             LocationType='Physical Location', AveragePosition=1.3,
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
@@ -32,7 +32,7 @@ class GetAllRecordsTest(TestCase):
             CampaignStatus=False, CityCriteriaId=2222222,
             CountryCriteriaId=2222, CustomerDescriptiveName='Test CustomerDescriptiveName 2',
             ExternalCustomerId=2222222222, IsTargetingLocation=False,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=2222222,
+            MetroCriteriaId=None, MostSpecificCriteriaId=2222222,
             RegionCriteriaId=22222, Date='2018-02-12', Device='Tablets with full browsers',
             LocationType='Location of interest', AveragePosition=1.3,
             Clicks=2, Conversions=4.00, ConversionValue=35.75,
@@ -59,7 +59,7 @@ class GetSingleRecordTest(TestCase):
             CampaignStatus=True, CityCriteriaId=1111111,
             CountryCriteriaId=1111, CustomerDescriptiveName='Test CustomerDescriptiveName 1',
             ExternalCustomerId=1111111111, IsTargetingLocation=True,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=1111111,
+            MetroCriteriaId=None, MostSpecificCriteriaId=1111111,
             RegionCriteriaId=11111, Date='2018-06-27', Device='Computers',
             LocationType='Physical Location', AveragePosition=1.3,
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
@@ -71,7 +71,7 @@ class GetSingleRecordTest(TestCase):
             CampaignStatus=False, CityCriteriaId=2222222,
             CountryCriteriaId=2222, CustomerDescriptiveName='Test CustomerDescriptiveName 2',
             ExternalCustomerId=2222222222, IsTargetingLocation=False,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=2222222,
+            MetroCriteriaId=None, MostSpecificCriteriaId=2222222,
             RegionCriteriaId=22222, Date='2018-02-12', Device='Tablets with full browsers',
             LocationType='Location of interest', AveragePosition=1.3,
             Clicks=2, Conversions=4.00, ConversionValue=35.75,
@@ -175,7 +175,7 @@ class UpdateSingleRecordTest(TestCase):
             CampaignStatus=True, CityCriteriaId=1111111,
             CountryCriteriaId=1111, CustomerDescriptiveName='Test CustomerDescriptiveName 1',
             ExternalCustomerId=1111111111, IsTargetingLocation=True,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=1111111,
+            MetroCriteriaId=None, MostSpecificCriteriaId=1111111,
             RegionCriteriaId=11111, Date='2018-06-27', Device='Computers',
             LocationType='Physical Location', AveragePosition=1.3,
             Clicks=1, Conversions=0.00, ConversionValue=0.00,
@@ -187,7 +187,7 @@ class UpdateSingleRecordTest(TestCase):
             CampaignStatus=False, CityCriteriaId=2222222,
             CountryCriteriaId=2222, CustomerDescriptiveName='Test CustomerDescriptiveName 2',
             ExternalCustomerId=2222222222, IsTargetingLocation=False,
-            MetroCriteriaId=' --', MostSpecificCriteriaId=2222222,
+            MetroCriteriaId=None, MostSpecificCriteriaId=2222222,
             RegionCriteriaId=22222, Date='2018-02-12', Device='Tablets with full browsers',
             LocationType='Location of interest', AveragePosition=1.3,
             Clicks=2, Conversions=4.00, ConversionValue=35.75,
@@ -261,3 +261,43 @@ class UpdateSingleRecordTest(TestCase):
             content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteSingleRecordTest(TestCase):
+    """ Test module for deleting an existing puppy record """
+
+    def setUp(self):
+        self.test_record_1 = Record.objects.create(
+            AccountDescriptiveName='Test AccountDescriptiveName 1',
+            CampaignId=111111111, CampaignName='Test CampaignName 1',
+            CampaignStatus=True, CityCriteriaId=1111111,
+            CountryCriteriaId=1111, CustomerDescriptiveName='Test CustomerDescriptiveName 1',
+            ExternalCustomerId=1111111111, IsTargetingLocation=True,
+            MetroCriteriaId=None, MostSpecificCriteriaId=1111111,
+            RegionCriteriaId=11111, Date='2018-06-27', Device='Computers',
+            LocationType='Physical Location', AveragePosition=1.3,
+            Clicks=1, Conversions=0.00, ConversionValue=0.00,
+            Cost=150000, Impressions=4, Interactions=1,
+            InteractionTypes='[\"Clicks\"]', VideoViews=0)
+        self.test_record_2 = Record.objects.create(
+            AccountDescriptiveName='Test AccountDescriptiveName 2',
+            CampaignId=222222222, CampaignName='Test CampaignName 2',
+            CampaignStatus=False, CityCriteriaId=2222222,
+            CountryCriteriaId=2222, CustomerDescriptiveName='Test CustomerDescriptiveName 2',
+            ExternalCustomerId=2222222222, IsTargetingLocation=False,
+            MetroCriteriaId=None, MostSpecificCriteriaId=2222222,
+            RegionCriteriaId=22222, Date='2018-02-12', Device='Tablets with full browsers',
+            LocationType='Location of interest', AveragePosition=1.3,
+            Clicks=2, Conversions=4.00, ConversionValue=35.75,
+            Cost=170000, Impressions=8, Interactions=4,
+            InteractionTypes='[\"Clicks\"]', VideoViews=1)
+
+    def test_valid_delete_record(self):
+        response = client.delete(
+            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_invalid_delete_record(self):
+        response = client.delete(
+            reverse('get_delete_update_record', kwargs={'pk': 48}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
