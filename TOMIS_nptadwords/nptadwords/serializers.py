@@ -13,4 +13,4 @@ class AccountSerializers(serializers.ModelSerializer):
                   'Device', 'LocationType', 'AveragePosition', 'Clicks',
                   'Conversions', 'ConversionValue', 'Cost', 'Impressions',
                   'Interactions', 'InteractionTypes', 'VideoViews',
-                  'created_at', 'updated_at')
+                  'CreatedAt', 'UpdatedAt')

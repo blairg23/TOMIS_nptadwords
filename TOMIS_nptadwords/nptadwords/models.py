@@ -30,8 +30,8 @@ class Account(models.Model):
     Interactions = models.IntegerField()
     InteractionTypes = models.CharField(max_length=255)
     VideoViews = models.IntegerField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    CreatedAt = models.DateTimeField(auto_now_add=True)
+    UpdatedAt = models.DateTimeField(auto_now=True)
 
     def __repr__(self):
         return self.AccountDescriptiveName + 'is added.'
