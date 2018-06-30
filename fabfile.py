@@ -21,6 +21,7 @@ def deploy(c):
         with c.cd('{}/{}'.format(site_folder, site_name)):
             _update_static_files(c)
             _update_database(c)
+        c.sudo('systemctl restart gunicorn')
 
 
 
@@ -37,7 +38,7 @@ def _get_latest_source(c):
 def _update_virtualenv(c):
     if not c.run('pipenv --venv',warn=True):
         c.run('pipenv --three')
-    #c.run('pipenv install --dev')
+    c.run('pipenv install --dev')
 
 
 def _create_or_update_dotenv(c):
