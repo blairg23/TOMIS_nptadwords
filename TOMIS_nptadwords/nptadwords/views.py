@@ -5,7 +5,7 @@ from .models import Account
 from .serializers import AccountSerializers
 
 
-@api_view(['GET', 'DELETE', 'PUT'])
+@api_view(['GET', 'UPDATE', 'DELETE'])
 def get_delete_update_account(request, pk):
     try:
         account = Account.objects.get(pk=pk)
@@ -14,7 +14,8 @@ def get_delete_update_account(request, pk):
 
     # get details of single account
     if request.method == 'GET':
-        return Response({})
+        serializer = AccountSerializers(account)
+        return Response(serializer.data)
     # delete single account
     elif request.method == 'DELETE':
         return Response({})
