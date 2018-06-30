@@ -168,7 +168,6 @@ class CreateNewAccountTest(TestCase):
 class UpdateSingleAccountTest(TestCase):
     """ Test module for updating an existing account record """
 
-
     def setUp(self):
         self.test_account_1 = Account.objects.create(
             AccountDescriptiveName='Test AccountDescriptiveName 1',
