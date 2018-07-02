@@ -1,4 +1,5 @@
 from django.conf.urls import url
+from django.urls import include, path
 from rest_framework_swagger.views import get_swagger_view
 from rest_framework.urlpatterns import format_suffix_patterns
 from . import views
@@ -16,7 +17,8 @@ urlpatterns = [
     ),
     url(
         r'^swagger/$', schema_view
-    )
+    ),
+    path('api/v1/rest-auth/', include('rest_auth.urls')),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
