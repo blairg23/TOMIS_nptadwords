@@ -28,6 +28,19 @@ def cast_decimal(key, value):
             key: 'This field is required to be an decimal.'
         })
 
+def cast_boolean(value):
+    try:
+        return bool(value)
+    except(ValueError):
+        return bool(value.lower() == 'enabled')
+
+def cast_datetime(key, value):
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except(ValueError):
+        raise serializers.ValidationError({
+            key: 'This field is required to be a date string in the format %Y-%m-%d .'
+        })
 
 class RecordSerializers(serializers.ModelSerializer):
     class Meta:
@@ -71,7 +84,8 @@ class RecordSerializers(serializers.ModelSerializer):
         }
 
         for key, value in inc_data.items():
-            if not value:
+            print(value)
+            if value is None:
                 raise serializers.ValidationError({
                     key: 'This field is required.'
                 })
@@ -80,7 +94,7 @@ class RecordSerializers(serializers.ModelSerializer):
             'AccountDescriptiveName': inc_data['AccountDescriptiveName'],
             'CampaignId': cast_int('CampaignId', inc_data['CampaignId']),
             'CampaignName': inc_data['CampaignName'],
-            'CampaignStatus': bool(inc_data['CampaignStatus'].lower() == 'enabled'),
+            'CampaignStatus': cast_boolean(inc_data['CampaignStatus']),
             'CityCriteriaId': criteria_id_cleaner(inc_data['CityCriteriaId']),
             'CountryCriteriaId': criteria_id_cleaner(inc_data['CountryCriteriaId']),
             'CustomerDescriptiveName': inc_data['CustomerDescriptiveName'],
@@ -89,7 +103,7 @@ class RecordSerializers(serializers.ModelSerializer):
             'MetroCriteriaId': criteria_id_cleaner(inc_data['MetroCriteriaId']),
             'MostSpecificCriteriaId': criteria_id_cleaner(inc_data['MostSpecificCriteriaId']),
             'RegionCriteriaId': criteria_id_cleaner(inc_data['RegionCriteriaId']),
-            'Date': datetime.strptime(inc_data['Date'], "%Y-%m-%d").date(),
+            'Date': cast_datetime('Date',inc_data['Date']),
             'Device': inc_data['Device'],
             'LocationType': inc_data['LocationType'],
             'AveragePosition': inc_data['AveragePosition'],
@@ -133,4 +147,3 @@ class RecordSerializers(serializers.ModelSerializer):
         instance.VideoViews = validated_data.get('VideoViews', instance.VideoViews)
         instance.save()
         return instance
-        
