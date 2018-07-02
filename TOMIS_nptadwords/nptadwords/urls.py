@@ -15,7 +15,7 @@ urlpatterns = [
         views.RecordList.as_view()
     ),
     url(
-        r'^$', schema_view
+        r'^swagger/$', schema_view
     )
 ]
 

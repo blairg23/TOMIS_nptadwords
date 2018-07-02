@@ -15,6 +15,7 @@ config['sudo']['password'] = '@e157Mil'
 config['sudo']['user'] = 'aemil'
 config['user'] = 'aemil'
 
+
 @task
 def deploy(c):
     with Connection(host='138.68.234.194', config=config, connect_kwargs={'password':'@e157Mil'}) as c:
@@ -29,7 +30,6 @@ def deploy(c):
         c.sudo('sudo systemctl restart gunicorn')
 
 
-
 def _get_latest_source(c):
     if exists(c, '.git'):
         c.run('git fetch')
@@ -41,20 +41,20 @@ def _get_latest_source(c):
 
 
 def _update_virtualenv(c):
-    if not c.run('pipenv --venv',warn=True):
+    if not c.run('pipenv --venv', warn=True):
         c.run('pipenv --three')
     #c.run('pipenv install --dev')
 
 
 def _create_or_update_dotenv(c):
-    append(c,'.env', 'DJANGO_DEBUG_FALSE=y')
-    append(c,'.env', 'SITENAME={}'.format(site_name))
+    append(c, '.env', 'DJANGO_DEBUG_FALSE=y')
+    append(c, '.env', 'SITENAME={}'.format(site_name))
     current_contents = c.run('cat .env')
     if 'DJANGO_SECRET_KEY' not in current_contents.stdout:
         new_secret = ''.join(random.SystemRandom().choices(
             'abcdefghijklmnopqrstuvwxyz0123456789', k=50
         ))
-        append(c,'.env', 'DJANGO_SECRET_KEY={}'.format(new_secret))
+        append(c, '.env', 'DJANGO_SECRET_KEY={}'.format(new_secret))
 
 
 def _update_static_files(c):
