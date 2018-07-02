@@ -65,7 +65,7 @@ def data_cleaner(request):
             'MetroCriteriaId': criteria_id_cleaner(request.data.get('MetroCriteriaId')),
             'MostSpecificCriteriaId': criteria_id_cleaner(request.data.get('MostSpecificCriteriaId')),
             'RegionCriteriaId': criteria_id_cleaner(request.data.get('RegionCriteriaId')),
-            'Date': datetime.strptime(request.data.get('Date'),"%Y-%m-%d").date(),
+            'Date': datetime.strptime(request.data.get('Date'), "%Y-%m-%d").date(),
             'Device': request.data.get('Device'),
             'LocationType': request.data.get('LocationType'),
             'AveragePosition': Decimal(request.data.get('AveragePosition')),
