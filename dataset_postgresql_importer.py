@@ -15,6 +15,7 @@ conn = psycopg2.connect("host=localhost dbname=nptadwords_drf user=nptadwords \
 cur = conn.cursor()
 now = datetime.now()
 
+print("Importing dataset ...")
 with open('npt_adwords_20170101_20180627.json') as f:
     data = json.load(f)
     for idx, record in enumerate(data):
@@ -50,4 +51,5 @@ with open('npt_adwords_20170101_20180627.json') as f:
                         now
                      )
                     )
-        conn.commit()
+    conn.commit()
+print("... Succesfully Imported dataset")

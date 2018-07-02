@@ -1,14 +1,13 @@
-import json
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from django.urls import reverse
+from rest_framework.test import APITestCase, APIRequestFactory
 from ..models import Record
 from ..serializers import RecordSerializers
+from .. import views
 
 
 class BaseViewTest(APITestCase):
     # initialize the APIClient app
-    client = APIClient()
+    factory = APIRequestFactory()
 
     def setUp(self):
         # add test date
@@ -64,7 +63,7 @@ class BaseViewTest(APITestCase):
         }
         self.invalid_payload = {
             "AccountDescriptiveName": "",
-            "CampaignId": "301791361",
+            "CampaignId": "fdsf",
             "CampaignName": "Nashville Pedal Tavern",
             "CampaignStatus": "enabled",
             "CityCriteriaId": "1026083",
@@ -75,7 +74,7 @@ class BaseViewTest(APITestCase):
             "MetroCriteriaId": " --",
             "MostSpecificCriteriaId": "9013184",
             "RegionCriteriaId": "21175",
-            "Date": "2018-02-11",
+            "Date": "2018-02-",
             "Device": "Computers",
             "LocationType": "Physical location",
             "AveragePosition": "1.3",
@@ -88,6 +87,8 @@ class BaseViewTest(APITestCase):
             "InteractionTypes": "[\"Clicks\"]",
             "VideoViews": "0"
         }
+        self.RecordList = views.RecordList.as_view()
+        self.RecordDetail = views.RecordDetail.as_view()
 
 
 class GetAllRecordsTest(BaseViewTest):
@@ -95,11 +96,12 @@ class GetAllRecordsTest(BaseViewTest):
 
     def test_get_all_records(self):
         # get API response
-        response = self.client.get(reverse('get_post_records'))
+        request = self.factory.get('/')
+        response = self.RecordList(request).render()
         # get data from db
         records = Record.objects.all()
         serializer = RecordSerializers(records, many=True)
-        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.data['results'], serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -108,8 +110,8 @@ class GetSingleRecordTest(BaseViewTest):
 
     def test_get_valid_single_record(self):
         # get API response
-        response = self.client.get(
-            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}))
+        request = self.factory.get('/{}'.format(self.test_record_1.pk))
+        response = self.RecordDetail(request, pk=self.test_record_1.pk).render()
         # get data from db
         record = Record.objects.get(pk=self.test_record_1.pk)
         serializer = RecordSerializers(record)
@@ -117,8 +119,8 @@ class GetSingleRecordTest(BaseViewTest):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_record(self):
-        response = self.client.get(
-            reverse('get_delete_update_record', kwargs={'pk': 30}))
+        request = self.factory.get('/{}'.format(30))
+        response = self.RecordDetail(request, pk=30).render()
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
 
@@ -127,20 +129,14 @@ class CreateNewRecordTest(BaseViewTest):
 
     def test_create_valid_record(self):
         # get API response
-        response = self.client.post(
-            reverse('get_post_records'),
-            data=json.dumps(self.valid_payload),
-            content_type='application/json'
-        )
+        request = self.factory.post('/', self.valid_payload, format='json')
+        response = self.RecordList(request).render()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_invalid_record(self):
         # get API response
-        response = self.client.post(
-            reverse('get_post_records'),
-            data=json.dumps(self.invalid_payload),
-            content_type='application/json'
-        )
+        request = self.factory.post('/', self.invalid_payload, format='json')
+        response = self.RecordList(request).render()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -149,20 +145,14 @@ class UpdateSingleRecordTest(BaseViewTest):
 
     def test_valid_update_record(self):
         # get API response
-        response = self.client.put(
-            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}),
-            data=json.dumps(self.valid_payload),
-            content_type='application/json'
-        )
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        request = self.factory.put('/{}'.format(self.test_record_1.pk), self.valid_payload, format='json')
+        response = self.RecordDetail(request, pk=self.test_record_1.pk).render()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_invalid_update_record(self):
         # get API response
-        response = self.client.put(
-            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}),
-            data=json.dumps(self.invalid_payload),
-            content_type='application/json'
-        )
+        request = self.factory.put('/{}'.format(self.test_record_1.pk), self.invalid_payload, format='json')
+        response = self.RecordDetail(request, pk=self.test_record_1.pk).render()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -171,12 +161,12 @@ class DeleteSingleRecordTest(BaseViewTest):
 
     def test_valid_delete_record(self):
         # get API response
-        response = self.client.delete(
-            reverse('get_delete_update_record', kwargs={'pk': self.test_record_1.pk}))
+        request = self.factory.delete('/{}'.format(self.test_record_1.pk))
+        response = self.RecordDetail(request, pk=self.test_record_1.pk).render()
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
     def test_invalid_delete_record(self):
         # get API response
-        response = self.client.delete(
-            reverse('get_delete_update_record', kwargs={'pk': 48}))
+        request = self.factory.delete('/{}'.format(40))
+        response = self.RecordDetail(request, pk=40).render()
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
