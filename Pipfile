@@ -11,6 +11,7 @@ gunicorn = "*"
 django-rest-swagger = "*"
 django-filter = "*"
 django-rest-auth = "*"
+django-chartit = "*"
 
 [dev-packages]
 

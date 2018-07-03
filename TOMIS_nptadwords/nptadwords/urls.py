@@ -19,6 +19,7 @@ urlpatterns = [
         r'^swagger/$', schema_view
     ),
     path('api/v1/rest-auth/', include('rest_auth.urls')),
+    url(r'^$', views.homepage, name='homepage'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
